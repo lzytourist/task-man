@@ -6,5 +6,5 @@ class HasPermission(BasePermission):
         required_permissions = getattr(view, 'required_permissions', None)
         if required_permissions:
             permissions = request.user.role.permissions.value_list('codename', flat=True)
-            return all(required_permissions in permission for permission in permissions)
-        return True
+            return all(permission in permissions for permission in required_permissions)
+        raise ValueError('required_permissions should be defined HasPermission')
