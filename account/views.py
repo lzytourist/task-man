@@ -31,4 +31,9 @@ class RoleRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = RoleSerializer
     queryset = Role.objects.all()
     permission_classes = (IsAuthenticated, HasPermission)
-    required_permissions = ['update_role', 'delete_role', 'view_role']
+    required_permissions = ['update_role', 'view_role']
+
+    def get_permissions(self):
+        if self.request.method == 'DELETE':
+            self.required_permissions = ['delete_role']
+        return super().get_permissions()
