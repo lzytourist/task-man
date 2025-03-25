@@ -15,6 +15,20 @@ class UserListCreateAPIView(ListCreateAPIView):
     required_permissions = ['create_user', 'view_user']
 
 
+class UserRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+    permission_classes = (IsAuthenticated, HasPermission)
+    required_permissions = ['view_user']
+
+    def get_permissions(self):
+        if self.request.method == 'PATCH' or self.request.method == 'PUT':
+            self.required_permissions = ['update_user']
+        elif self.request.method == 'DELETE':
+            self.required_permissions = ['delete_user']
+        return super().get_permissions()
+
+
 class PermissionListAPIView(ListAPIView):
     serializer_class = PermissionSerializer
     queryset = Permission.objects.all()
