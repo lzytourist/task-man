@@ -27,6 +27,11 @@ class PermissionSerializer(serializers.ModelSerializer):
 
 
 class RoleSerializer(serializers.ModelSerializer):
+    permissions_list = PermissionSerializer(
+        source='permissions',
+        many=True,
+        read_only=True
+    )
     class Meta:
         model = Role
         fields = '__all__'
