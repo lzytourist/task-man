@@ -1,9 +1,11 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from account.models import User, Permission, Role
 from account.permissions import HasPermission
-from account.serializers import UserSerializer, PermissionSerializer, RoleSerializer
+from account.serializers import UserSerializer, PermissionSerializer, RoleSerializer, AuthUserSerializer
 
 
 class UserListCreateAPIView(ListCreateAPIView):
@@ -37,3 +39,29 @@ class RoleRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
         if self.request.method == 'DELETE':
             self.required_permissions = ['delete_role']
         return super().get_permissions()
+
+
+class AuthUserAPIView(APIView):
+    serializer_class = AuthUserSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, *args, **kwargs):
+        serializer = self.serializer_class(instance=request.user, context={'request': request})
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(
+            instance=request.user,
+            data=request.data,
+            context={'request': request},
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            data={
+                'message': 'Account information has been updated.',
+                'user': serializer.data
+            }
+        )

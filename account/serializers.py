@@ -32,6 +32,23 @@ class RoleSerializer(serializers.ModelSerializer):
         many=True,
         read_only=True
     )
+
     class Meta:
         model = Role
         fields = '__all__'
+
+
+class AuthUserSerializer(serializers.ModelSerializer):
+    role = RoleSerializer(read_only=True)
+
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+        if validated_data.get('password'):
+            instance.set_password(validated_data.get('password'))
+            instance.save()
+        return instance
+
+    class Meta:
+        model = User
+        fields = ('id', 'name', 'email', 'role', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
