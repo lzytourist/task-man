@@ -4,6 +4,13 @@ from account.models import User, Permission, Role
 
 
 class UserSerializer(serializers.ModelSerializer):
+    role_title = serializers.SerializerMethodField(read_only=True)
+
+    def get_role_title(self, obj):
+        if obj.role:
+            return obj.role.title
+        return None
+
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
