@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from account.models import User
+from account.models import User, Permission, Role
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -18,3 +18,15 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'name', 'email', 'password')
         extra_kwargs = {'password': {'write_only': True}}
+
+
+class PermissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Permission
+        fields = '__all__'
+
+
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = '__all__'
