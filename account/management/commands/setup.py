@@ -1,13 +1,26 @@
 from django.core.management import BaseCommand
+from django.db import connection
 
 from account.models import Permission, Role, User
 
 
+def truncate(model):
+    cursor = connection.cursor()
+    cursor.execute(f'TRUNCATE TABLE {model._meta.db_table} CASCADE')
+
+
+def clean(models):
+    for model in models:
+        model.objects.all().delete()
+        truncate(model)
+
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        self.stdout.write('Creating permissions')
+        self.stderr.write('Cleaning tables...')
+        clean([User, Permission, Role])
 
-        Permission.objects.all().delete()
+        self.stdout.write('Creating permissions')
         permissions = [
             Permission(title='Create task', codename='create_task'),
             Permission(title='Update task', codename='update_task'),
@@ -29,13 +42,11 @@ class Command(BaseCommand):
         self.stdout.write('Done creating permissions')
 
         self.stdout.write('Creating admin role')
-        Role.objects.all().delete()
         role = Role.objects.create(title='Admin', codename='admin')
         role.permissions.add(*permissions)
         self.stdout.write('Created admin role')
 
         self.stdout.write('Create admin user')
-        User.objects.all().delete()
         User.objects.create_user(
             email='admin@mail.com',
             password='123',
