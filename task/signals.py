@@ -35,4 +35,5 @@ def post_save_handler(sender, instance: Task, created, **kwargs):
 
 @receiver(pre_save, sender=Task)
 def pre_save_handler(sender, instance: Task, **kwargs):
-    previous_values[instance.id] = Task.objects.get(id=instance.id)
+    if instance.pk:
+        previous_values[instance.id] = Task.objects.get(id=instance.id)
