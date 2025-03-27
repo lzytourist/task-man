@@ -16,3 +16,17 @@ class TaskListCreateAPIView(ListCreateAPIView):
         if self.request.method == 'POST':
             self.required_permissions = ['create_task']
         return super().get_permissions()
+
+
+class TaskRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+    permission_classes = [IsAuthenticated, HasPermission]
+    required_permissions = ['view_task']
+
+    def get_permissions(self):
+        if self.request.method == 'PATCH' or self.request.method == 'PUT':
+            self.required_permissions = ['update_task']
+        elif self.request.method == 'DELETE':
+            self.required_permissions = ['delete_task']
+        return super().get_permissions()
