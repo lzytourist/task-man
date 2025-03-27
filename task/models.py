@@ -18,6 +18,7 @@ class Task(TimeStampedModel):
 
     title = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
+    deadline = models.DateField(null=True, blank=True)
     priority = models.CharField(
         max_length=255,
         choices=Priority.choices,
