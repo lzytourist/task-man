@@ -47,10 +47,12 @@ class Command(BaseCommand):
         self.stdout.write('Created admin role')
 
         self.stdout.write('Create admin user')
-        User.objects.create_user(
+        user = User.objects.create_user(
             email='admin@mail.com',
             password='123',
             name='Admin',
             role=role
         )
         self.stdout.write('Created admin user')
+        self.stdout.write(f'Email: {user.email}')
+        self.stdout.write('Password: 123')
