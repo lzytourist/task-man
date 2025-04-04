@@ -14,6 +14,11 @@ class UserListCreateAPIView(ListCreateAPIView):
     queryset = User.objects.all()
     permission_classes = (IsAuthenticated, HasPermission)
     required_permissions = ['create_user', 'view_user']
+    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.required_permissions = ['view_user']
+        return super().get_permissions()
 
 
 class UserRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):

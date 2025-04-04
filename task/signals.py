@@ -3,6 +3,7 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 
+from account.utils import send_notification
 from .models import Task
 
 previous_values = {}
@@ -31,6 +32,13 @@ def post_save_handler(sender, instance: Task, created, **kwargs):
         )
         email.content_subtype = 'html'
         email.send()
+
+        # Send notification
+        send_notification(
+            by=instance.created_by,
+            to=instance.assigned_to,
+            message=f'Task Assigned #{instance.title}',
+        )
 
 
 @receiver(pre_save, sender=Task)
