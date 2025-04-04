@@ -3,9 +3,10 @@ from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpda
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from account.models import User, Permission, Role
+from account.models import User, Permission, Role, Notification
 from account.permissions import HasPermission
-from account.serializers import UserSerializer, PermissionSerializer, RoleSerializer, AuthUserSerializer
+from account.serializers import UserSerializer, PermissionSerializer, RoleSerializer, AuthUserSerializer, \
+    NotificationSerializer
 
 
 class UserListCreateAPIView(ListCreateAPIView):
@@ -79,3 +80,12 @@ class AuthUserAPIView(APIView):
                 'user': serializer.data
             }
         )
+
+
+class NotificationListAPIView(ListAPIView):
+    serializer_class = NotificationSerializer
+    queryset = Notification.objects.all()
+    permission_classes = [IsAuthenticated, ]
+
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user).order_by('-created_at')

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from account.models import User, Permission, Role
+from account.models import User, Permission, Role, Notification
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -59,3 +59,12 @@ class AuthUserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'name', 'email', 'role', 'password')
         extra_kwargs = {'password': {'write_only': True}}
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    generated_by = UserSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
+    
+    class Meta:
+        model = Notification
+        fields = '__all__'

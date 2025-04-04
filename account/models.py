@@ -18,6 +18,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+
 class TimeStampedModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -71,3 +72,22 @@ class User(AbstractBaseUser):
 
     def has_perm(self, perm):
         return self.role.permissions.filter(codename=perm).exists()
+
+
+class Notification(TimeStampedModel):
+    message = models.CharField(max_length=255)
+    seen = models.BooleanField(default=False)
+    generated_by = models.ForeignKey(
+        to=User,
+        on_delete=models.SET_NULL,
+        related_name='notifications_generated',
+        null=True,
+    )
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='notifications'
+    )
+
+    class Meta:
+        db_table = 'notifications'

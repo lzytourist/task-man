@@ -10,7 +10,8 @@ from .views import (
     RoleListCreateAPIView,
     RoleRetrieveUpdateDestroyAPIView,
     AuthUserAPIView,
-    UserRetrieveUpdateDestroyAPIView
+    UserRetrieveUpdateDestroyAPIView,
+    NotificationListAPIView
 )
 
 urlpatterns = [
@@ -22,4 +23,5 @@ urlpatterns = [
     path('roles/', RoleListCreateAPIView.as_view(), name='role-list-create'),
     path('roles/<int:pk>/', RoleRetrieveUpdateDestroyAPIView.as_view(), name='role-retrieve-update-delete'),
     path('user/', AuthUserAPIView.as_view(), name='auth-user'),
+    path('notifications/', NotificationListAPIView.as_view(), name='notification-list'),
 ]
