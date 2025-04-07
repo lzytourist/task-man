@@ -11,7 +11,9 @@ from .views import (
     RoleRetrieveUpdateDestroyAPIView,
     AuthUserAPIView,
     UserRetrieveUpdateDestroyAPIView,
-    NotificationListAPIView
+    NotificationListAPIView,
+    NotificationDestroyAPIView,
+    MarkSeenAPIView,
 )
 
 urlpatterns = [
@@ -24,4 +26,6 @@ urlpatterns = [
     path('roles/<int:pk>/', RoleRetrieveUpdateDestroyAPIView.as_view(), name='role-retrieve-update-delete'),
     path('user/', AuthUserAPIView.as_view(), name='auth-user'),
     path('notifications/', NotificationListAPIView.as_view(), name='notification-list'),
+    path('notifications/<int:pk>/', NotificationDestroyAPIView.as_view(), name='notification-delete'),
+    path('notifications/mark-seen/', MarkSeenAPIView.as_view(), name='notification-mark-seen'),
 ]

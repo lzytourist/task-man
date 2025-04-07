@@ -1,5 +1,6 @@
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView, DestroyAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -14,7 +15,7 @@ class UserListCreateAPIView(ListCreateAPIView):
     queryset = User.objects.all()
     permission_classes = (IsAuthenticated, HasPermission)
     required_permissions = ['create_user', 'view_user']
-    
+
     def get_permissions(self):
         if self.request.method == 'GET':
             self.required_permissions = ['view_user']
@@ -94,3 +95,40 @@ class NotificationListAPIView(ListAPIView):
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user).order_by('-created_at')
+
+
+class MarkSeenAPIView(APIView):
+    permission_classes = [IsAuthenticated, ]
+
+    def post(self, request, *args, **kwargs):
+        notification_ids = request.data.get('ids')
+
+        errors = []
+        if notification_ids is None:
+            errors.append('notification id(s) are required')
+        elif not isinstance(notification_ids, list):
+            errors.append('notification id(s) should be a list')
+        elif len(notification_ids) == 0:
+            errors.append('notification id(s) should not be empty')
+
+        if len(errors):
+            return Response(
+                data={'notification_ids': errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        (Notification.objects
+         .filter(user_id=request.user)
+         .filter(id__in=notification_ids)
+         .update(seen=True))
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class NotificationDestroyAPIView(DestroyAPIView):
+    serializer_class = NotificationSerializer
+    queryset = Notification.objects.all()
+    permission_classes = [IsAuthenticated, ]
+
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
