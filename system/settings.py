@@ -154,3 +154,10 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
+
+CELERY_BROKER_URL = 'django-db://'
+CELERY_RESULT_BACKEND = 'django-db://'
+CELERY_TIMEZONE = 'Asia/Dhaka'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
