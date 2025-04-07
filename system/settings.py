@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'django_celery_results',
 
     'account',
     'task',
@@ -155,8 +156,8 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
-CELERY_BROKER_URL = 'django-db://'
-CELERY_RESULT_BACKEND = 'django-db://'
+CELERY_BROKER_URL = 'memory://'
+CELERY_RESULT_BACKEND = 'django-db'
 CELERY_TIMEZONE = 'Asia/Dhaka'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'

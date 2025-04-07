@@ -6,6 +6,8 @@ from django.template.loader import render_to_string
 from account.utils import send_notification
 from .models import Task
 
+from .tasks import send_task_assigned_email
+
 previous_values = {}
 
 
@@ -20,18 +22,20 @@ def post_save_handler(sender, instance: Task, created, **kwargs):
 
     if assigned_to is not None:
         # TODO: Use background task to send email
-        email = EmailMessage(
-            to=[instance.assigned_to.email],
-            subject=f'Task Assigned #{instance.title}',
-            body=render_to_string(
-                'emails/task_assigned.html',
-                context={
-                    'task': instance
-                }
-            )
-        )
-        email.content_subtype = 'html'
-        email.send()
+        # email = EmailMessage(
+        #     to=[instance.assigned_to.email],
+        #     subject=f'Task Assigned #{instance.title}',
+        #     body=render_to_string(
+        #         'emails/task_assigned.html',
+        #         context={
+        #             'task': instance
+        #         }
+        #     )
+        # )
+        # email.content_subtype = 'html'
+        # email.send()
+        print('sending task assigned email')
+        send_task_assigned_email.delay([instance.assigned_to.email], instance.id)
 
         # Send notification
         send_notification(
