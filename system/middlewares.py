@@ -18,16 +18,17 @@ def get_user(user_id):
 
 class JWTAuthMiddleware(BaseMiddleware):
     async def __call__(self, scope, receive, send):
-        token = None
-        for key, value in scope['headers']:
-            if key == b'authorization':
-                token = value.decode('utf-8')
-                break
+        token = scope["url_route"]["kwargs"]["access_token"]
+        if token is None:
+            for key, value in scope['headers']:
+                if key == b'authorization':
+                    token = value.decode('utf-8').split(' ')[-1]
+                    break
 
         scope['user'] = AnonymousUser()
         if token is not None:
             try:
-                validated_token = AccessToken(token.split(' ')[-1])
+                validated_token = AccessToken(token)
                 user = await get_user(validated_token.get('user_id'))
                 scope['user'] = user
                 # print(repr(scope))
