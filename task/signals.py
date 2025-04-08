@@ -1,3 +1,5 @@
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.core.mail import EmailMessage
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
@@ -43,6 +45,12 @@ def post_save_handler(sender, instance: Task, created, **kwargs):
             to=instance.assigned_to,
             message=f'Task Assigned #{instance.title}',
         )
+
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(f'inbox_{instance.assigned_to.id}', {
+            "type": "notify.user",
+            "message": f"Task Assigned #{instance.title}",
+        })
 
 
 @receiver(pre_save, sender=Task)
