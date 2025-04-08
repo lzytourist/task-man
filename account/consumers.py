@@ -12,7 +12,12 @@ class NotificationConsumer(WebsocketConsumer):
     def connect(self):
         if self.scope['user'].is_authenticated:
             user = self.scope['user']
+
             self.group_name = f'inbox_{user.id}'
+            async_to_sync(self.channel_layer.group_add)(
+                self.group_name, self.channel_name
+            )
+
             self.accept()
         else:
             self.close(reason='Authentication required')
