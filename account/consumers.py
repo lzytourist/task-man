@@ -20,10 +20,11 @@ class NotificationConsumer(WebsocketConsumer):
 
             self.accept()
         else:
-            self.close(reason='Authentication required')
+            self.disconnect(code=401)
 
     def disconnect(self, code):
-        async_to_sync(self.channel_layer.group_discard)(self.group_name, self.channel_name)
+        if self.group_name is not None:
+            async_to_sync(self.channel_layer.group_discard)(self.group_name, self.channel_name)
         self.close()
 
     def notify_user(self, message):

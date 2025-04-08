@@ -18,7 +18,7 @@ def get_user(user_id):
 
 class JWTAuthMiddleware(BaseMiddleware):
     async def __call__(self, scope, receive, send):
-        token = scope["url_route"]["kwargs"]["access_token"]
+        token = scope["query_string"].decode('utf-8').split('=')[-1]
         if token is None:
             for key, value in scope['headers']:
                 if key == b'authorization':
