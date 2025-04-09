@@ -4,7 +4,8 @@ from .views import (
     TaskListCreateAPIView,
     TaskRetrieveUpdateDestroyAPIView,
     AssignedTaskListAPIView,
-    AcceptTaskAPIView
+    AcceptTaskAPIView,
+    TaskReportAPIView
 )
 
 urlpatterns = [
@@ -12,4 +13,5 @@ urlpatterns = [
     path('<int:pk>/', TaskRetrieveUpdateDestroyAPIView.as_view(), name='task-retrieve-update-delete'),
     path('assigned/<int:user_id>/', AssignedTaskListAPIView.as_view(), name='assigned-task-list'),
     path('assigned/<int:pk>/accept/', AcceptTaskAPIView.as_view(), name='task-accept'),
+    path('report/', TaskReportAPIView.as_view(), name='task-report'),
 ]
