@@ -86,7 +86,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'taskman',
-        'USER': 'postgres',
+        'USER': 'taskman_user',
         'PASSWORD': 't00r',
         'HOST': 'localhost',
         'PORT': '5432',
@@ -156,11 +156,11 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
-CELERY_BROKER_URL = 'memory://'
-CELERY_RESULT_BACKEND = 'django-db'
-CELERY_TIMEZONE = 'Asia/Dhaka'
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_TIMEZONE = 'Asia/Dhaka'
 CELERY_RESULT_SERIALIZER = 'json'
 
 CHANNEL_LAYERS = {
