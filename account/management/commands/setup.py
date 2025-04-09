@@ -21,9 +21,6 @@ class Command(BaseCommand):
         clean([User, Permission, Role])
 
         with transaction.atomic():
-            self.stderr.write('Cleaning tables...')
-            clean([User, Permission, Role])
-
             self.stdout.write('Creating permissions')
             permissions = [
                 Permission(title='Create task', codename='create_task'),
