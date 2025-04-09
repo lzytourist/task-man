@@ -17,6 +17,9 @@ def clean(models):
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        self.stderr.write('Cleaning tables...')
+        clean([User, Permission, Role])
+
         with transaction.atomic():
             self.stderr.write('Cleaning tables...')
             clean([User, Permission, Role])
