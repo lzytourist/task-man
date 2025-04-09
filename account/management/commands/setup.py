@@ -41,6 +41,7 @@ class Command(BaseCommand):
                 Permission(title='Delete role', codename='delete_role'),
                 Permission(title='View role', codename='view_role'),
                 Permission(title='Assign role', codename='assign_role'),
+                Permission(title='View analytics', codename='view_analytics'),
             ]
             Permission.objects.bulk_create(permissions)
             self.stdout.write('Done creating permissions')
