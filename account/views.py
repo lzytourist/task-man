@@ -8,6 +8,7 @@ from account.models import User, Permission, Role, Notification
 from account.permissions import HasPermission
 from account.serializers import UserSerializer, PermissionSerializer, RoleSerializer, AuthUserSerializer, \
     NotificationSerializer
+from account.tasks import send_user_email
 
 
 class UserListCreateAPIView(ListCreateAPIView):
@@ -139,3 +140,22 @@ class NotificationDestroyAPIView(DestroyAPIView):
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
+
+
+class SendEmailAPIView(APIView):
+    permission_classes = [IsAuthenticated, HasPermission]
+    required_permissions = ['send_email']
+
+    def post(self, request, *args, **kwargs):
+        to = request.data.get('to', None)
+        subject = request.data.get('subject', None)
+        message = request.data.get('message', None)
+
+        if not to or not subject or not message:
+            return Response(
+                data={'error': 'missing required fields'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        send_user_email.delay([to], subject, message)
+        return Response(status=status.HTTP_204_NO_CONTENT)

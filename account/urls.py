@@ -14,6 +14,7 @@ from .views import (
     NotificationListAPIView,
     NotificationDestroyAPIView,
     MarkSeenAPIView,
+    SendEmailAPIView,
 )
 
 urlpatterns = [
@@ -28,4 +29,5 @@ urlpatterns = [
     path('notifications/', NotificationListAPIView.as_view(), name='notification-list'),
     path('notifications/<int:pk>/', NotificationDestroyAPIView.as_view(), name='notification-delete'),
     path('notifications/mark-seen/', MarkSeenAPIView.as_view(), name='notification-mark-seen'),
+    path('send-email/', SendEmailAPIView.as_view(), name='send-email'),
 ]
