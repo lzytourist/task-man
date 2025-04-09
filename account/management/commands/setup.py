@@ -65,7 +65,8 @@ class Command(BaseCommand):
                 'send_email',
                 'generate_report',
                 'view_role',
-                'assign_role'
+                'assign_role',
+                'view_analytics'
             ]).values_list('id', flat=True))
             self.stdout.write('Created PM role')
 
