@@ -49,6 +49,11 @@ class RoleListCreateAPIView(ListCreateAPIView):
     permission_classes = (IsAuthenticated, HasPermission)
     required_permissions = ['create_role', 'view_role']
 
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.required_permissions = ['view_role']
+        return super().get_permissions()
+
 
 class RoleRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = RoleSerializer
@@ -59,6 +64,8 @@ class RoleRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     def get_permissions(self):
         if self.request.method == 'DELETE':
             self.required_permissions = ['delete_role']
+        elif self.request.method == 'GET':
+            self.required_permissions = ['view_role']
         return super().get_permissions()
 
 
