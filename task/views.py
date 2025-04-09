@@ -42,7 +42,7 @@ class AssignedTaskListAPIView(ListAPIView):
     required_permissions = ['view_task']
 
     def get_queryset(self):
-        return super().get_queryset().filter(assigned_to=self.request.user)
+        return super().get_queryset().filter(assigned_to=self.kwargs.get('user_id'))
 
 
 class AcceptTaskAPIView(APIView):
