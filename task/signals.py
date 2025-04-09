@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from account.utils import send_notification
 from .models import Task
 
-from .tasks import send_task_assigned_email
+from .tasks import send_task_assigned_email, send_task_status_changed_email
 
 previous_values = {}
 
@@ -21,6 +21,14 @@ def post_save_handler(sender, instance: Task, created, **kwargs):
             assigned_to = instance.assigned_to
     elif instance.assigned_to_id is not None and instance.assigned_to_id != previous_values[instance.id].assigned_to_id:
         assigned_to = instance.assigned_to_id
+
+    if not created:
+        if instance.status != previous_values[instance.id].status:
+            send_task_status_changed_email.delay(
+                to=[instance.created_by.email],
+                task_id=instance.id,
+                cc=[instance.assigned_to.email]
+            )
 
     if assigned_to is not None:
         # TODO: Use background task to send email

@@ -17,3 +17,18 @@ def send_task_assigned_email(to: [str], task_id: int):
     )
     email.content_subtype = 'html'
     email.send(fail_silently=False)
+
+@shared_task
+def send_task_status_changed_email(to: [str], task_id: int, cc: [str]):
+    task = Task.objects.get(id=task_id)
+    email = EmailMessage(
+        to=to,
+        cc=cc,
+        subject=f'Task Status Changed #{task.id}: {task.title}',
+        body=render_to_string(
+            'emails/task_status_changed.html',
+            context={'task': task},
+        )
+    )
+    email.content_subtype = 'html'
+    email.send(fail_silently=False)
