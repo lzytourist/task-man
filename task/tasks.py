@@ -7,7 +7,6 @@ from .models import Task
 @shared_task
 def send_task_assigned_email(to: [str], task_id: int):
     task = Task.objects.get(id=task_id)
-    print('Inside send_task_assigned_email')
     email = EmailMessage(
         to=to,
         subject=f'Task Assigned #{task.id}: {task.title}',
