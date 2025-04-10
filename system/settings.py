@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -25,7 +26,7 @@ SECRET_KEY = 'django-insecure-0a=ps1$pfq6!4km_i98ya7s75=c3&5anmqh9(^21u__3ybm)s(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.8']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.8', 'frontend', 'backend']
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -88,19 +89,19 @@ ASGI_APPLICATION = 'system.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'taskman',
-        'USER': 'taskman_user',
-        'PASSWORD': 't00r',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.getenv('POSTGRES_DB', 'taskman'),
+        'USER': os.getenv('POSTGRES_USER', 'taskman_user'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 't00r'),
+        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
+        'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }
 }
 
 # Email settings
-EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
-EMAIL_HOST_USER = 'c9715b797d2c80'
-EMAIL_HOST_PASSWORD = '19cf15155f5db0'
-EMAIL_PORT = '2525'
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'sandbox.smtp.mailtrap.io')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'c9715b797d2c80')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '19cf15155f5db0')
+EMAIL_PORT = os.getenv('EMAIL_PORT', '2525')
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -159,10 +160,10 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER', 'redis://redis:6379/0')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://redis:6379/0')
 CELERY_TIMEZONE = 'Asia/Dhaka'
 CELERY_RESULT_SERIALIZER = 'json'
 
@@ -170,7 +171,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
+            "hosts": [(os.getenv('REDIS_HOST', '127.0.0.1'), os.getenv('REDIS_PORT', '6379'))],
         },
     },
 }
